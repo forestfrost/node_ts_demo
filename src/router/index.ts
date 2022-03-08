@@ -1,2 +1,3 @@
 import student from "./student";
-export default [...student];
+import jd from "./jd";
+export default [...student, ...jd];
