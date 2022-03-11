@@ -2,14 +2,7 @@ import { Student } from "@/dateBase/index";
 import { StudentAttributes } from "@/dateBase/models/student";
 import { Request, Response } from "express";
 import { Op } from "sequelize";
-//错误新模板
-function getErrorInfo(message: string) {
-  return {
-    code: 1800,
-    message,
-    data: [],
-  };
-}
+import { setErrorTemplate, setNormalTemplate, notUndefined } from "@/utils/common";
 /**
  * @description 获取学生列表
  */
@@ -18,15 +11,15 @@ export async function getStudentList(req: Request, res: Response) {
     const { query } = req;
     const { id, name, sex, age } = query;
     if (typeof id !== "undefined" && !/\d+/.test(id as string)) {
-      res.send(getErrorInfo("id must be Integer"));
+      res.send(setErrorTemplate(1800, "id must be Integer"));
       return;
     }
     if (typeof age !== "undefined" && !/\d+/.test(age as string)) {
-      res.send(getErrorInfo("age must be Integer"));
+      res.send(setErrorTemplate(1800, "age must be Integer"));
       return;
     }
     if (typeof sex !== "undefined" && ![0, 1].includes(Number(sex))) {
-      res.send(getErrorInfo("sex must be 1 or 0"));
+      res.send(setErrorTemplate(1800, "sex must be 1 or 0"));
       return;
     }
     const results: Array<StudentAttributes> = await Student.findAll({
@@ -55,10 +48,10 @@ export async function getStudentList(req: Request, res: Response) {
         isDeleted: false,
       },
     });
-    res.send({ code: 2000, message: "成功", data: results });
+    res.send(setNormalTemplate(2000, results));
   } catch (e) {
     console.log(e);
-    res.send(getErrorInfo("失败"));
+    res.send(setErrorTemplate(1800, "失败"));
   }
 }
 /**
@@ -66,27 +59,36 @@ export async function getStudentList(req: Request, res: Response) {
  */
 export async function addStudent(req: Request, res: Response) {
   const { name, sex, address, age } = req.body;
-  if (typeof age !== "undefined" && !/\d+/.test(age)) {
-    res.send(getErrorInfo("age must be Integer"));
+  const queryNotUndefined = notUndefined({ name, sex, age, address });
+  if (typeof queryNotUndefined !== "boolean") {
+    res.send(setErrorTemplate(1800, queryNotUndefined));
     return;
   }
-  if (typeof sex !== "undefined" && ![0, 1].includes(Number(sex))) {
-    res.send(getErrorInfo("sex must be 1 or 0"));
+  if (!/\d+/.test(age)) {
+    res.send(setErrorTemplate(1800, "age must be Integer"));
+    return;
+  }
+  if (![0, 1].includes(Number(sex))) {
+    res.send(setErrorTemplate(1800, "sex must be 1 or 0"));
     return;
   }
   const now = new Date();
+  //node环境下 Date时间为国际时间,所以需要手动加 8 个小时 => 北京时间
   now.setHours(now.getHours() + 8);
   try {
-    await Student.create({
-      studentName: name,
-      age,
-      sex,
-      address,
-      createdAt: now,
-      updatedAt: now,
-    });
-    res.send({ code: 2000, message: "成功", data: [] });
+    await Student.create(
+      {
+        studentName: name,
+        age,
+        sex,
+        address,
+        createdAt: now,
+        updatedAt: now,
+      }
+      // { fields: ["studentName", "age", "sex"] }
+    );
+    res.send(setNormalTemplate(2000, []));
   } catch (e) {
-    res.send(getErrorInfo("失败"));
+    res.send(setErrorTemplate(1800, "失败"));
   }
 }

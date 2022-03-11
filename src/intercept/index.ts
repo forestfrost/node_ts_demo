@@ -31,4 +31,9 @@ const requestIntercept = (
 const runIntercept = (app: Express) => {
   requestIntercept(app, intercepts);
 };
-export { CORS, runIntercept };
+
+const run = (app: Express) => {
+  CORS(app);
+  runIntercept(app);
+};
+export default run;
