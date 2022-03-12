@@ -1,3 +1,5 @@
 import student from "./student";
 import jd from "./jd";
-export default [...student, ...jd];
+import course from "./course";
+import selectCourse from "./selectCourse";
+export default [...student, ...jd, ...course, ...selectCourse];
