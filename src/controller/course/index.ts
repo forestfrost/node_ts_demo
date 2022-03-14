@@ -38,6 +38,9 @@ export async function addCourse(req: Request, res: Response) {
 export async function getCourseList(req: Request, res: Response) {
   try {
     const results: Array<CourseAttributes> = await Course.findAll({
+      attributes:{
+        exclude:["id","isDeleted"]
+      },
       include: [
         {
           model: Student,

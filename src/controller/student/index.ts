@@ -51,7 +51,9 @@ export async function getStudentList(req: Request, res: Response) {
       include: [
         {
           model: Project,
-          attributes: ["name"],
+          attributes: {
+            exclude:["isDeleted","studentId","id"]
+          },
         },
       ],
     });
