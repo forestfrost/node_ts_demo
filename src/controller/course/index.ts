@@ -49,6 +49,7 @@ export async function getCourseList(req: Request, res: Response) {
               [Op.eq]: 1,
             },
           },
+          attributes: ["studentName", "age", "sex", "address"],
           through: {
             attributes: [],
           },

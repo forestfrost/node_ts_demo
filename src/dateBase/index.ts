@@ -31,7 +31,7 @@ async function init() {
     await sequelize.authenticate();
     console.log("数据库连接成功");
     await sequelize.sync();
-    // await sequelize.sync({ alter: true });
+    //await sequelize.sync({ alter: true });
     console.log("数据表更新完成");
   } catch (e) {
     console.log(e);

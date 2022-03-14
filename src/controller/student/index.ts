@@ -3,7 +3,6 @@ import { Project } from "@/dateBase/index";
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { setErrorTemplate, setNormalTemplate, notUndefined } from "@/utils/common";
-import { StudentInstance } from "@/dateBase/models/student";
 /**
  * @description 获取学生列表
  */
@@ -24,6 +23,7 @@ export async function getStudentList(req: Request, res: Response) {
       return;
     }
     let results = await Student.findAll({
+      attributes: ["studentName", "age"],
       where: {
         id:
           typeof id == "undefined"

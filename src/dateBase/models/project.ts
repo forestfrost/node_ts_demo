@@ -1,4 +1,5 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Optional } from "sequelize";
+import { Student } from "../index";
 export default {
   id: {
     type: DataTypes.INTEGER.UNSIGNED,
@@ -21,6 +22,10 @@ export default {
   },
   studentId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: Student,
+      key: "id",
+    },
     allowNull: false,
   },
 };
