@@ -1,4 +1,4 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Optional } from "sequelize";
 export default {
   id: {
     type: DataTypes.INTEGER.UNSIGNED,
@@ -15,12 +15,20 @@ export default {
   updatedAt: {
     type: DataTypes.DATE,
   },
+  isDeleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  studentId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 };
-export interface ProjectAttributes {
-  id: number;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
+export class ProjectInstance extends Model<InferAttributes<ProjectInstance>, InferCreationAttributes<ProjectInstance>> {
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare createdAt?: Date;
+  declare updatedAt?: Date;
+  declare isDeleted?: boolean;
+  declare studentId: CreationOptional<number>;
 }
-export interface ProjectCreationAttributes extends Optional<ProjectAttributes, "id"> {}
-export interface ProjectInstance extends Model<ProjectAttributes, ProjectCreationAttributes>, ProjectAttributes {}

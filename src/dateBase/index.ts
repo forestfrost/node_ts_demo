@@ -16,8 +16,16 @@ const Student = sequelize.define<StudentInstance>("student", student);
 const Project = sequelize.define<ProjectInstance>("project", project);
 const Course = sequelize.define<CourseInstance>("course", course);
 const SelectCourse = sequelize.define<SelectCourseInstance>("selectCourse", selectCourse);
+//学生 Student 与 课程 Course 多对多关联
 Student.belongsToMany(Course, { through: SelectCourse });
 Course.belongsToMany(Student, { through: SelectCourse });
+//学生 Student 与 项目 Project 一对多关联
+Student.hasMany(Project, {
+  foreignKey: {
+    allowNull: false,
+  },
+});
+Project.belongsTo(Student);
 async function init() {
   try {
     await sequelize.authenticate();

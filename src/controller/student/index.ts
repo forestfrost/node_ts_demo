@@ -1,8 +1,9 @@
 import { Student } from "@/dateBase/index";
-import { StudentAttributes } from "@/dateBase/models/student";
+import { Project } from "@/dateBase/index";
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import { setErrorTemplate, setNormalTemplate, notUndefined } from "@/utils/common";
+import { StudentInstance } from "@/dateBase/models/student";
 /**
  * @description 获取学生列表
  */
@@ -22,7 +23,7 @@ export async function getStudentList(req: Request, res: Response) {
       res.send(setErrorTemplate(1800, "sex must be 1 or 0"));
       return;
     }
-    const results: Array<StudentAttributes> = await Student.findAll({
+    let results = await Student.findAll({
       where: {
         id:
           typeof id == "undefined"
@@ -47,6 +48,12 @@ export async function getStudentList(req: Request, res: Response) {
             : (age as string),
         isDeleted: false,
       },
+      include: [
+        {
+          model: Project,
+          attributes: ["name"],
+        },
+      ],
     });
     res.send(setNormalTemplate(2000, results));
   } catch (e) {
